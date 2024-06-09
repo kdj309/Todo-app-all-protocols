@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package todo;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc AddTodo(addTodoParams) returns (Todo) {}
+  rpc gettodos(empty) returns (TodoList) {}
+  rpc deleteTodo(deleteTodoParams) returns (empty) {}
+}
+message getTodos{}
+message empty{}
+
+message HelloRequest {
+  string name = 1;
+}
+message deleteTodoParams {
+  string id = 1;
+}
+ 
+
+message HelloReply {
+  string message = 1;
+}
+
+message addTodoParams {
+  string title=1;
+  string description=2;
+}
+message Todo {
+  string title= 1;
+  int32 id=2;
+  string description=3;
+}
+
+message TodoList {
+  repeated Todo todo = 1;
+}
