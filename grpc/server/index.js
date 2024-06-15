@@ -1,7 +1,7 @@
 var PROTO_PATH = '../hello.proto';
 var grpc = require('@grpc/grpc-js');
 let todos = [
-    { id: 1, title: 'Todo 1', description: 'Completed Todos application' }
+    { id: "1", title: 'Todo 1',isCompleted:true }
 ]
 var protoLoader = require('@grpc/proto-loader');
 var packageDefinition = protoLoader.loadSync(
@@ -22,8 +22,8 @@ function sayHello(call, callback) {
 
 function addTodo(call, callback) {
     const todo = call.request;
-    todo.id = Math.floor(Math.random());
-    todos.push(todo)
+    todos.push({...todo,isCompleted:false})
+    console.log(todos)
     callback(null, todo)
 }
 
@@ -40,13 +40,27 @@ function deleteTodo(call, callback) {
         })
     }
 }
+function updateTodo(call,callback) {
+    const {id}=call.request;
+    const todoUpdate = todos.findIndex((t) => t.id == id);
+    if (todoUpdate != -1) {
+        todos[todoUpdate].isCompleted=!todos[todoUpdate].isCompleted
+        console.log(todos)
+        callback(null,todos[todoUpdate])
+    } else {
+        callback({
+            code: grpc.status.NOT_FOUND,
+            details: "Not Found"
+        })
+    }
+}
 function gettodos(_, callback) {
     callback(null, { todo: todos })
 }
 function main() {
     var server = new grpc.Server();
-    server.addService(todo.Greeter.service, { sayHello: sayHello, AddTodo: addTodo, deleteTodo: deleteTodo, gettodos });
-    server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), (err, port) => {
+    server.addService(todo.Greeter.service, { sayHello: sayHello, AddTodo: addTodo, deleteTodo: deleteTodo, gettodos,updateTodo });
+    server.bindAsync('0.0.0.0:9090', grpc.ServerCredentials.createInsecure(), (err, port) => {
         if (err != null) {
             return console.error(err);
         }

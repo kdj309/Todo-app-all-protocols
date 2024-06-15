@@ -19,15 +19,14 @@ message deleteTodoParams {
   string id = 1;
 }
  
+message updateTodoParams {
+  string id =1;
+}
 
 message HelloReply {
   string message = 1;
 }
 
-
-message updateTodoParams {
-  string id =1;
-}
 message addTodoParams {
   string title=1;
   string id=2;
@@ -36,7 +35,6 @@ message Todo {
   string title= 1;
   string id=2;
   bool isCompleted=3;
-
 }
 
 message TodoList {
